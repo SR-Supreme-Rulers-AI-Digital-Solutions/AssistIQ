@@ -1,51 +1,76 @@
-// ====== Keyword Mapping ======
-const responses = {
-  refund: "We offer a 7-day refund policy.",
-  contact: "You can reach us at: support@assistiq.com",
-  hello: "Hello! How can I assist you today?",
-  hi: "Hello! How can I assist you today?",
-  pricing: "Our pricing details are available on the website.",
-  support: "Our support team is here 24/7 to assist you."
-};
+function addMessage(text, type) {
+  let chatbox = document.getElementById("chatbox");
 
-// ====== DOM Elements ======
-const chatbox = document.getElementById("chatbox");
-const userInput = document.getElementById("userInput");
-const chatForm = document.getElementById("chatForm");
+  let msg = document.createElement("div");
+  msg.className = "message " + type;
+  msg.innerText = text;
 
-// ====== Render Message Function ======
-function renderMessage(sender, text) {
-  const msg = document.createElement("p");
-  msg.className = sender;
-  msg.textContent = `${sender === "user" ? "You" : "Bot"}: ${text}`;
   chatbox.appendChild(msg);
-  chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll
+  chatbox.scrollTop = chatbox.scrollHeight;
 }
 
-// ====== Send Message Function ======
-function sendMessage(e) {
-  e.preventDefault(); // Prevent form reload
-  let input = userInput.value.trim();
-  if (!input) return;
+function getAIResponse(input) {
+  input = input.toLowerCase();
 
-  renderMessage("user", input);
-  userInput.value = "";
+  if (input.includes("hello") || input.includes("hi")) {
+    return "👋 Welcome to AssistIQ! How can I assist you today?";
+  }
 
-  // Simulate typing delay
-  renderMessage("bot", "Typing... 🤖");
+  if (input.includes("pricing")) {
+    return "💰 Our plans start from ₹199/month. Would you like full details?";
+  }
+
+  if (input.includes("order")) {
+    return "📦 Please provide your order ID to track your order.";
+  }
+
+  if (input.includes("contact")) {
+    return "📞 Contact us at support@assistiq.com";
+  }
+
+  if (input.includes("services")) {
+    return "🚀 We build AI chatbots for websites and businesses.";
+  }
+
+  if (input.includes("thank")) {
+    return "😊 You're welcome! Happy to help.";
+  }
+
+  // Smart fallback
+  let replies = [
+    "That's interesting! Tell me more.",
+    "I understand. Can you explain a bit more?",
+    "Let me check that for you 🤔",
+    "I'm here to help! Please provide more details.",
+    "Good question! I'm still learning 😄"
+  ];
+
+  return replies[Math.floor(Math.random() * replies.length)];
+}
+
+function sendMessage() {
+  let input = document.getElementById("userInput").value;
+
+  if (input.trim() === "") return;
+
+  addMessage(input, "user");
+
+  addMessage("Typing...", "bot");
+
   setTimeout(() => {
-    // Remove "Typing..." placeholder
-    chatbox.lastChild.remove();
+    let messages = document.querySelectorAll(".bot");
+    messages[messages.length - 1].innerText = getAIResponse(input);
+  }, 800);
 
-    // Check keywords
-    let responseKey = Object.keys(responses).find(key =>
-      input.toLowerCase().includes(key)
-    );
-    let response = responseKey ? responses[responseKey] : "Sorry, I didn't understand that. 🤔";
-
-    renderMessage("bot", response);
-  }, 700); // 0.7s delay for realism
+  document.getElementById("userInput").value = "";
 }
 
-// ====== Event Listener ======
-chatForm.addEventListener("submit", sendMessage);
+function quickMsg(text) {
+  document.getElementById("userInput").value = text;
+  sendMessage();
+}
+
+// Welcome message
+window.onload = function() {
+  addMessage("👋 Welcome to AssistIQ!\nAI-powered customer support assistant.\nHow can I help you today?", "bot");
+};
