@@ -17,32 +17,36 @@ function getAIResponse(input) {
   }
 
   if (input.includes("pricing")) {
-    return "💰 Our plans start from ₹199/month. Would you like full details?";
+    return "💰 Demo: Pricing starts from ₹199/month. Full billing system available in premium version.";
   }
 
   if (input.includes("order")) {
-    return "📦 Please provide your order ID to track your order.";
+    return "📦 Demo: Order tracking feature available in full version.";
   }
 
   if (input.includes("contact")) {
-    return "📞 Contact us at support@assistiq.com";
+    return "📞 Email: support@assistiq.com\n💼 Want this chatbot? Contact us!";
   }
 
   if (input.includes("services")) {
-    return "🚀 We build AI chatbots for websites and businesses.";
+    return "🚀 We build AI chatbots for websites, businesses & automation systems.";
+  }
+
+  if (input.includes("ai")) {
+    return "🤖 This is a demo AI chatbot designed to simulate smart customer support.";
   }
 
   if (input.includes("thank")) {
-    return "😊 You're welcome! Happy to help.";
+    return "😊 You're welcome! Let me know if you need anything else.";
   }
 
   // Smart fallback
   let replies = [
     "That's interesting! Tell me more.",
-    "I understand. Can you explain a bit more?",
-    "Let me check that for you 🤔",
-    "I'm here to help! Please provide more details.",
-    "Good question! I'm still learning 😄"
+    "I understand. This can be customized for your business 💼",
+    "Let me think 🤔 (Demo AI response)",
+    "Great question! Full AI available in premium version 🔒",
+    "I'm here to help! Please provide more details."
   ];
 
   return replies[Math.floor(Math.random() * replies.length)];
@@ -70,7 +74,33 @@ function quickMsg(text) {
   sendMessage();
 }
 
+// 🎤 Voice input
+function startVoice() {
+  if (!('webkitSpeechRecognition' in window)) {
+    alert("Voice input not supported in this browser");
+    return;
+  }
+
+  let recognition = new webkitSpeechRecognition();
+  recognition.lang = "en-IN";
+  recognition.start();
+
+  recognition.onstart = function() {
+    addMessage("🎤 Listening...", "bot");
+  };
+
+  recognition.onresult = function(event) {
+    let voiceText = event.results[0][0].transcript;
+    document.getElementById("userInput").value = voiceText;
+    sendMessage();
+  };
+
+  recognition.onerror = function() {
+    addMessage("❌ Voice recognition error", "bot");
+  };
+}
+
 // Welcome message
 window.onload = function() {
-  addMessage("👋 Welcome to AssistIQ!\nAI-powered customer support assistant.\nHow can I help you today?", "bot");
+  addMessage("👋 Welcome to AssistIQ!\nAI-powered customer support demo.\n💡 Ask anything or use buttons below.", "bot");
 };
